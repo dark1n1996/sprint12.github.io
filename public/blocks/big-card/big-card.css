@@ -1,0 +1,16 @@
+@import url(./__close/big-card__close.css);
+@import url(./__image/big-card__image.css);
+@import url(./_active/big-card_active.css);
+
+.big-card {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    object-fit: contain;
+    display: none;
+    justify-content: center;
+}
+
