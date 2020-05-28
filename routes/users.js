@@ -7,20 +7,16 @@ router.get('/users/:id', (req, res) => {
       console.log(err);
       return;
     }
-    for(let i = 0; i < JSON.parse(data).length; i++) {
-      a.push(JSON.parse(data)[i]._id);
-      if(JSON.parse(data)[i]._id === req.params.id) {
-        res.send(JSON.parse(data)[i]);
-        return;
-      } else {
-        continue;
+    JSON.parse(data).find ( e => {
+      if(e._id === req.params.id) {
+        res.send(e);
       }
-    }
+      a.push(e._id);
+    })
     if(!a.includes(req.params.id)) {
       res.status(404);
       res.send({ "message": "Нет пользователя с таким id" });
     }
-    console.log(req.params.id);
   });
 });
 router.get('/users', (req, res) => {
