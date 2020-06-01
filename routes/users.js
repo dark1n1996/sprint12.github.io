@@ -1,33 +1,29 @@
-const router = require("express").Router();
-const fs = require("fs");
-let a = [];
-router.get("/users/:id", (req, res) => {
-  fs.readFile("data/users.json", { encoding: "utf8" }, (err, data) => {
-    if(err) {
-      console.log(err);
+const router = require('express').Router();
+const fs = require('fs');
+const path = require('path');
+
+router.get('/users/:id', (req, res) => {
+  fs.readFile(path.join(__dirname, '../data/users.json'), { encoding: 'utf8' }, (err, data) => {
+    if (err) {
+      res.status(500).send(err.message);
       return;
     }
-    JSON.parse(data).find ( e => {
-      if(e._id === req.params.id) {
-        res.send(e);
-      }
-      a.push(e._id);
-    });
-    if(!a.includes(req.params.id)) {
-      res.status(404);
-      res.send({ "message": "Нет пользователя с таким id" });
+    const key = JSON.parse(data).find((element) => element._id === req.params.id);
+    if (key) {
+      res.send(key);
+    } else {
+      res.status(404).send({ message: 'Нет пользователя с таким id' });
     }
   });
 });
-router.get("/users", (req, res) => {
-  fs.readFile("data/users.json", { encoding: "utf8" }, (err, data) => {
-    if(err) {
-      console.log(err);
+router.get('/users', (req, res) => {
+  fs.readFile('data/users.json', { encoding: 'utf8' }, (err, data) => {
+    if (err) {
+      res.status(500).send(err.message);
       return;
     }
     res.send(data);
   });
-
 });
 
 module.exports = router;
