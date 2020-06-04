@@ -1,12 +1,7 @@
 module.exports = {
-  env: {
-    node: true,
-  },
   extends: 'airbnb-base',
-  parserOptions: {
-    ecmaVersion: 11,
-  },
   rules: {
-    semi: ['error', 'always'],
+    'no-underscore-dangle': 0,
+    'no-console': 0,
   },
 };
