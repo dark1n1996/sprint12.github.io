@@ -1,7 +1,6 @@
 const express = require('express');
 
 const app = express();
-const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
@@ -21,12 +20,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   req.user = {
-    _id: '5d8b8592978f8bd833ca8133',
+    _id: '5edb9e2821a6b5544189dd65',
   };
-
   next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(users);
 app.use(cards);
 app.use(error);

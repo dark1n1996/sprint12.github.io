@@ -8,14 +8,13 @@ const readUsers = (req, res) => {
 const readUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: 'Такого пользователя не существует' }));
 };
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  console.log(name)
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 module.exports = {
