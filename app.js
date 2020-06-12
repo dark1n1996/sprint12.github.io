@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 
 const app = express();
 const mongoose = require('mongoose');
@@ -18,12 +19,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5edb9e2821a6b5544189dd65',
-  };
-  next();
-});
 app.use(users);
 app.use(cards);
 app.use(error);
