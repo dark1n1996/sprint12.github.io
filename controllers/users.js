@@ -11,11 +11,11 @@ const readUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res.send({ message: 'Такого пользователя не существует' });
+        res.status(404).send({ message: 'Такого пользователя не существует' });
       }
       return res.status(200).send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(404).send({ message: 'Такого пользователя не существует' }));
 };
 const createUser = (req, res) => {
   const {
@@ -24,10 +24,19 @@ const createUser = (req, res) => {
   bcrypt.hash(password, 10)
     .then((hash) => {
       User.create({
-        name, about, avatar, password: hash, email,
+        name, about, avatar, password, email,
       })
-        .then((user) => res.status(200).send({ data: user }))
-        .catch((err) => res.status(500).send({ message: err.message }));
+        .then((user) => {
+          User.findByIdAndUpdate(user._id, { password: `${hash}` }, { new: true })
+            .then((user) => res.status(200).send({ data: user }))
+            .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+        })
+        .catch((err) => {
+          if (err.name === 'ValidationError') {
+            res.status(400).send({ message: 'Запрос не прошел валидацию' });
+          }
+          return res.status(500).send({ message: 'Произошла ошибка на сервере' });
+        });
     });
 };
 const login = (req, res) => {

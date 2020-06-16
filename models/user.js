@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    select: false,
+    minlength: 8,
   },
   email: {
     type: String,
@@ -38,7 +40,6 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Некорректный Email',
     },
-    select: false,
   },
 });
 

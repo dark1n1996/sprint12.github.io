@@ -9,7 +9,12 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user.id })
     .then((card) => res.status(200).send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Запрос не прошел валидацию' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 const deleteCard = (req, res) => {
   Card.findById(req.params.id)
@@ -27,7 +32,7 @@ const deleteCard = (req, res) => {
         res.status(404).send({ message: 'Такой карточки нет' });
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(404).send({ message: 'Такой карточки нет' }));
 };
 module.exports = {
   deleteCard,
