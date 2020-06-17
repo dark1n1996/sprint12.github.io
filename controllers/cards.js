@@ -11,7 +11,7 @@ const createCard = (req, res) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Запрос не прошел валидацию' });
+        return res.status(400).send({ message: 'Запрос не прошел валидацию' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
