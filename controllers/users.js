@@ -11,7 +11,7 @@ const readUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Такого пользователя не существует' });
+        return res.status(404).send({ message: 'Такого пользователя не существует' });
       }
       return res.status(200).send({ data: user });
     })
@@ -28,12 +28,16 @@ const createUser = (req, res) => {
       })
         .then((user) => {
           User.findByIdAndUpdate(user._id, { password: `${hash}` }, { new: true })
+            // eslint-disable-next-line no-shadow
             .then((user) => res.status(200).send({ data: user }))
             .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
         })
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            res.status(400).send({ message: 'Запрос не прошел валидацию' });
+            return res.status(400).send({ message: 'Запрос не прошел валидацию' });
+          }
+          if (err.code === 11000) {
+            return res.status(409).send({ message: 'Пользователь с такой электронной почтой уже существует' });
           }
           return res.status(500).send({ message: 'Произошла ошибка на сервере' });
         });
