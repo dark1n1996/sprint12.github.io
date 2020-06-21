@@ -1,8 +1,10 @@
 const express = require('express');
+require('dotenv').config();
 
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const { PORT = 3000 } = process.env;
 const users = require('./routes/users');
@@ -18,12 +20,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5edb9e2821a6b5544189dd65',
-  };
-  next();
-});
+app.use(cookieParser());
 app.use(users);
 app.use(cards);
 app.use(error);
