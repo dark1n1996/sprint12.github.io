@@ -5,10 +5,10 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
 const error = require('./routes/error');
-const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/loggers');
 
 const { PORT = 3000 } = process.env;

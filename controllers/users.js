@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const UnautorizedError = require('../errors/unautorized-error'); //401
-const ConflictError = require('../errors/conflict-error'); //409
-const NotFoundError = require('../errors/not-found-error'); //404
-const BadRequestError = require('../errors/bad-request-error'); //400
+const UnautorizedError = require('../errors/unautorized-error'); // 401
+const ConflictError = require('../errors/conflict-error'); // 409
+const NotFoundError = require('../errors/not-found-error'); // 404
+const BadRequestError = require('../errors/bad-request-error'); // 400
 
 const readUsers = (req, res, next) => {
   User.find({})

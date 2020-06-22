@@ -1,9 +1,9 @@
 const Card = require('../models/card');
-const UnautorizedError = require('../errors/unautorized-error'); //401
-const ConflictError = require('../errors/conflict-error'); //409
-const NotFoundError = require('../errors/not-found-error'); //404
-const BadRequestError = require('../errors/bad-request-error'); //400
-const ForbiddenError = require('../errors/forbidden-error'); //403
+const UnautorizedError = require('../errors/unautorized-error'); // 401
+const ConflictError = require('../errors/conflict-error'); // 409
+const NotFoundError = require('../errors/not-found-error'); // 404
+const BadRequestError = require('../errors/bad-request-error'); // 400
+const ForbiddenError = require('../errors/forbidden-error'); // 403
 
 const readCards = (req, res, next) => {
   Card.find({})
