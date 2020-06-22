@@ -15,7 +15,7 @@ const readUser = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        throw next(new NotFoundError('Такого пользователя не существует'));
+        throw new NotFoundError('Такого пользователя не существует');
       }
       return res.status(200).send({ data: user });
     })
@@ -45,24 +45,26 @@ const createUser = (req, res, next) => {
           }
           return next(err);
         });
-    });
+    })
+    .catch(next);
 };
 const login = (req, res, next) => {
   const { password, email } = req.body;
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return next(new UnautorizedError('Неправильные почта или пароль'));
+        throw new UnautorizedError('Неправильные почта или пароль');
       }
       return bcrypt.compare(password, user.password)
         // eslint-disable-next-line consistent-return
         .then((matched) => {
           if (!matched) {
-            return next(new UnautorizedError('Неправильные почта или пароль'));
+            throw new UnautorizedError('Неправильные почта или пароль');
           }
           const token = jwt.sign({ id: user._id }, `${process.env.JWT_SECRET}`, { expiresIn: '7d' });
           res.cookie('jwt', token, { httpOnly: true }).end();
-        });
+        })
+        .catch(next);
     })
     .catch(next);
 };
