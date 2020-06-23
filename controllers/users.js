@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const User = require('../models/user');
 const UnautorizedError = require('../errors/unautorized-error'); // 401
 const ConflictError = require('../errors/conflict-error'); // 409
@@ -12,14 +13,17 @@ const readUsers = (req, res, next) => {
     .catch(next);
 };
 const readUser = (req, res, next) => {
-  User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Такого пользователя не существует');
-      }
-      return res.status(200).send({ data: user });
-    })
-    .catch(next);
+  if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return User.findById(req.params.id)
+      .then((user) => {
+        if (!user) {
+          throw new NotFoundError('Такого пользователя не существует');
+        }
+        return res.status(200).send({ data: user });
+      })
+      .catch(next);
+  }
+  return next(new BadRequestError('Запрос не прошел валидацию'));
 };
 const createUser = (req, res, next) => {
   const {
@@ -61,7 +65,7 @@ const login = (req, res, next) => {
           if (!matched) {
             throw new UnautorizedError('Неправильные почта или пароль');
           }
-          const token = jwt.sign({ id: user._id }, `${process.env.JWT_SECRET}`, { expiresIn: '7d' });
+          const token = jwt.sign({ id: user._id }, process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
           res.cookie('jwt', token, { httpOnly: true }).end();
         })
         .catch(next);

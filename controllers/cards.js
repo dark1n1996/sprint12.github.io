@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 const NotFoundError = require('../errors/not-found-error'); // 404
 const BadRequestError = require('../errors/bad-request-error'); // 400
@@ -20,23 +21,26 @@ const createCard = (req, res, next) => {
     });
 };
 const deleteCard = (req, res, next) => {
-  Card.findById(req.params.id)
-    .then((card) => {
-      if (card) {
-        if (req.user.id == card.owner) {
-          Card.findByIdAndRemove(req.params.id)
-            .then(() => {
-              res.status(200).send({ data: card });
-            })
-            .catch(next);
+  if (mongoose.Types.ObjectId.isValid) {
+    return Card.findById(req.params.id)
+      .then((card) => {
+        if (card) {
+          if (req.user.id == card.owner) {
+            Card.findByIdAndRemove(req.params.id)
+              .then(() => {
+                res.status(200).send({ data: card });
+              })
+              .catch(next);
+          } else {
+            throw new ForbiddenError('Недостаточно прав для удаления карточки');
+          }
         } else {
-          throw new ForbiddenError('Недостаточно прав для удаления карточки');
+          throw new NotFoundError('Такой карточки нет');
         }
-      } else {
-        throw new NotFoundError('Такой карточки нет');
-      }
-    })
-    .catch(next);
+      })
+      .catch(next);
+  }
+  return next(new BadRequestError('Запрос не прошел валидацию'));
 };
 module.exports = {
   deleteCard,
